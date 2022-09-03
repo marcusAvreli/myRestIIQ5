@@ -91,8 +91,10 @@ public class ValidateToken extends AuthenticationFilter {
 		SailPointContext ctx = null;
 		HttpSession session = null;
 		try {
-
-			ctx = SailPointFactory.createContext("My Context");
+			//ctx = SailPointFactory.getCurrentContext();
+			if(null == ctx) {
+				ctx = SailPointFactory.createContext("My Context");
+			}
 			logger.info("Getting Context");
 
 			OAuthTokenValidator validator = new OAuthTokenValidator(ctx);
@@ -125,6 +127,8 @@ public class ValidateToken extends AuthenticationFilter {
 				}
 
 			}
+			
+			SailPointFactory.releaseContext(ctx);
 		} catch (OAuthTokenExpiredException e) {
 			reason = AuthenticationResult.Reason.OAUTH_TOKEN_EXPIRED;
 			result.put("success", false);
